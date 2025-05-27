@@ -14,7 +14,6 @@ func main() {
 }
 func send400(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusBadRequest)
-	return
 
 }
 

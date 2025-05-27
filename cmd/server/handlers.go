@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -23,23 +22,11 @@ func getGaugeMetric(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	data, err := parseURL(r)
+	_, err := parseURL(r)
 	if err == nil {
-		f, convErr := strconv.ParseFloat(data[1], 64)
-		if convErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		writeErr := DataBase.WriteGauge(data[0], f)
-		if writeErr != nil {
-			//w.WriteHeader(http.StatusBadRequest)
-			//return
-
-		}
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(err.Error()))
 		return
 	}
 
@@ -50,23 +37,11 @@ func getCounterMetric(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-	data, err := parseURL(r)
+	_, err := parseURL(r)
 	if err == nil {
-		f, convErr := strconv.ParseInt(data[1], 10, 64)
-		if convErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-		writeErr := DataBase.Increment(data[0], f)
-		if writeErr != nil {
-			//w.WriteHeader(http.StatusBadRequest)
-			//return
-
-		}
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte(err.Error()))
 		return
 	}
 }
