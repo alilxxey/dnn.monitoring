@@ -12,11 +12,17 @@ func main() {
 		panic(err)
 	}
 }
+func send400(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusBadRequest)
+	return
+
+}
 
 func run() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/update/gauge/", getGaugeMetric)
 	mux.HandleFunc("/update/counter/", getCounterMetric)
+	mux.HandleFunc("/", send400)
 	err := http.ListenAndServe("localhost:8080", mux)
 	return err
 

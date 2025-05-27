@@ -12,7 +12,7 @@ func parseURL(r *http.Request) ([]string, error) {
 	url := strings.Split(raw, "/")
 	urlLen := len(url)
 	if urlLen != 4 {
-		return []string{"error"}, errors.New("unexpected length of URL\n")
+		return []string{"error"}, errors.New("unexpected length of URL")
 	}
 	return []string{url[2], url[3]}, nil
 
@@ -32,8 +32,8 @@ func getGaugeMetric(w http.ResponseWriter, r *http.Request) {
 		}
 		writeErr := DataBase.WriteGauge(data[0], f)
 		if writeErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
+			//w.WriteHeader(http.StatusBadRequest)
+			//return
 
 		}
 		w.WriteHeader(http.StatusOK)
@@ -59,8 +59,8 @@ func getCounterMetric(w http.ResponseWriter, r *http.Request) {
 		}
 		writeErr := DataBase.Increment(data[0], f)
 		if writeErr != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			return
+			//w.WriteHeader(http.StatusBadRequest)
+			//return
 
 		}
 		w.WriteHeader(http.StatusOK)
