@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -53,7 +52,17 @@ func getCounterMetric(w http.ResponseWriter, r *http.Request) {
 	}
 	data, err := parseURL(r)
 	if err == nil {
-		fmt.Println(data)
+		f, convErr := strconv.ParseInt(data[1], 10, 64)
+		if convErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+		writeErr := DataBase.Increment(data[0], f)
+		if writeErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+
+		}
 		w.WriteHeader(http.StatusOK)
 	} else {
 		w.WriteHeader(http.StatusNotFound)
