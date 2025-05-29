@@ -1,11 +1,20 @@
-package main
+package handlers
 
 import (
 	"errors"
+	"github.com/alilxxey/dnn.monitoring/internal/interfaces"
 	"net/http"
 	"strconv"
 	"strings"
 )
+
+type HTTPHandler struct {
+	db interfaces.DB
+}
+
+func New(db interfaces.DB) *HTTPHandler {
+	return &HTTPHandler{db: db}
+}
 
 func parseURL(r *http.Request) ([]string, error) {
 	raw := strings.Trim(r.URL.Path, "/")
@@ -18,17 +27,23 @@ func parseURL(r *http.Request) ([]string, error) {
 
 }
 
-func getGaugeMetric(w http.ResponseWriter, r *http.Request) {
+func (h *HTTPHandler) GetGaugeMetric(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	data, err := parseURL(r)
 	if err == nil {
-		_, convErr := strconv.ParseInt(data[1], 10, 64)
+		f, convErr := strconv.ParseFloat(data[1], 64)
 		if convErr != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
+		}
+		writeErr := h.db.WriteGauge(data[0], f)
+		if writeErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+
 		}
 		w.WriteHeader(http.StatusOK)
 	} else {
@@ -39,17 +54,23 @@ func getGaugeMetric(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func getCounterMetric(w http.ResponseWriter, r *http.Request) {
+func (h *HTTPHandler) GetCounterMetric(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 	data, err := parseURL(r)
 	if err == nil {
-		_, convErr := strconv.ParseInt(data[1], 10, 64)
+		f, convErr := strconv.ParseInt(data[1], 10, 64)
 		if convErr != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			return
+		}
+		writeErr := h.db.Increment(data[0], f)
+		if writeErr != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			return
+
 		}
 		w.WriteHeader(http.StatusOK)
 	} else {

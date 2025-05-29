@@ -1,4 +1,4 @@
-package main
+package storage
 
 import (
 	"errors"
@@ -39,7 +39,7 @@ const (
 	counter       = "counter"
 )
 
-var gaugeMetricNames = []string{
+var GaugeMetricNames = []string{
 	Alloc,
 	BuckHashSys,
 	Frees,
@@ -69,37 +69,28 @@ var gaugeMetricNames = []string{
 	TotalAlloc,
 	RandomValue,
 }
-var counterMetricNames = []string{
+var CounterMetricNames = []string{
 	PollCount,
 }
 
-type DB interface {
-	WriteGauge(name string, value float64) error
-	Increment(name string, value int64) error
-	GetValue(name string) (any, error)
-	Exists(name string) bool
-	Fill()
-}
 type MemStorage struct {
 	gauge   map[string]float64
 	counter map[string]int64
 }
 
-func (s *MemStorage) Fill() {
-	if s.gauge == nil && s.counter == nil {
-		s.gauge = make(map[string]float64)
-		s.counter = make(map[string]int64)
-	} else {
-		panic("already exists")
-	}
-	for _, v := range gaugeMetricNames {
+func New() *MemStorage {
+	s := MemStorage{}
+	s.gauge = make(map[string]float64)
+	s.counter = make(map[string]int64)
+	for _, v := range GaugeMetricNames {
 		s.gauge[v] = 0.0
 	}
-	for _, v := range counterMetricNames {
+	for _, v := range CounterMetricNames {
 		s.counter[v] = 0
 	}
-
+	return &s
 }
+
 func (s *MemStorage) Exists(name string) (string, error) {
 	_, ok := s.gauge[name]
 	if ok {
@@ -128,18 +119,18 @@ func (s *MemStorage) Increment(name string, value int64) error {
 	return nil
 }
 
-func (s *MemStorage) GetValue(name string) any {
+func (s *MemStorage) GetValue(name string) (any, error) {
 	t, err := s.Exists(name)
 	if err != nil {
-		return err
+		return "", err
 	}
 	switch t {
 	case gauge:
 		fmt.Println(s.gauge[name])
-		return s.gauge[name]
+		return s.gauge[name], nil
 	case counter:
 		fmt.Println(s.counter[name])
-		return s.counter[name]
+		return s.counter[name], nil
 	}
-	return errors.New("something went wrong")
+	return "", errors.New("something went wrong")
 }

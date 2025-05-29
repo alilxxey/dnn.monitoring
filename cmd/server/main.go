@@ -1,26 +1,28 @@
 package main
 
 import (
+	"github.com/alilxxey/dnn.monitoring/internal/handlers"
+	"github.com/alilxxey/dnn.monitoring/internal/storage"
 	"net/http"
 )
 
-var DataBase MemStorage
-
 func main() {
-	DataBase.Fill()
 	if err := run(); err != nil {
 		panic(err)
 	}
 }
+
 func send400(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusBadRequest)
 
 }
 
 func run() error {
+	db := storage.New()
+	h := handlers.New(db)
 	mux := http.NewServeMux()
-	mux.HandleFunc("/update/gauge/", getGaugeMetric)
-	mux.HandleFunc("/update/counter/", getCounterMetric)
+	mux.HandleFunc("/update/gauge/", h.GetGaugeMetric)
+	mux.HandleFunc("/update/counter/", h.GetCounterMetric)
 	mux.HandleFunc("/", send400)
 	err := http.ListenAndServe("localhost:8080", mux)
 	return err
