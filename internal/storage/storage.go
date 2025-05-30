@@ -79,14 +79,9 @@ type MemStorage struct {
 }
 
 func New() *MemStorage {
-	s := MemStorage{}
-	s.gauge = make(map[string]float64)
-	s.counter = make(map[string]int64)
-	for _, v := range GaugeMetricNames {
-		s.gauge[v] = 0.0
-	}
-	for _, v := range CounterMetricNames {
-		s.counter[v] = 0
+	s := MemStorage{
+		gauge:   make(map[string]float64),
+		counter: make(map[string]int64),
 	}
 	return &s
 }
@@ -104,17 +99,11 @@ func (s *MemStorage) Exists(name string) (string, error) {
 }
 
 func (s *MemStorage) WriteGauge(name string, value float64) error {
-	if _, err := s.Exists(name); err != nil {
-		return err
-	}
 	s.gauge[name] = value
 	return nil
 }
 
 func (s *MemStorage) Increment(name string, value int64) error {
-	if _, err := s.Exists(name); err != nil {
-		return err
-	}
 	s.counter[name] += value
 	return nil
 }
