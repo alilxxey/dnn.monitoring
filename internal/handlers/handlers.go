@@ -20,10 +20,11 @@ func parseURL(r *http.Request) ([]string, error) {
 	raw := strings.Trim(r.URL.Path, "/")
 	url := strings.Split(raw, "/")
 	urlLen := len(url)
-	if urlLen != 4 {
+
+	if urlLen != 3 {
 		return []string{"error"}, errors.New("unexpected length of URL")
 	}
-	return []string{url[2], url[3]}, nil
+	return []string{url[1], url[2]}, nil
 
 }
 
