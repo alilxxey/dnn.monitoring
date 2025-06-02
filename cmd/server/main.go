@@ -12,8 +12,8 @@ func main() {
 	}
 }
 
-func send404(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotFound)
+func send400(w http.ResponseWriter, r *http.Request) {
+	w.WriteHeader(http.StatusBadRequest)
 
 }
 
@@ -24,7 +24,7 @@ func run() error {
 
 	mux.HandleFunc("/update/counter/", h.GetCounterMetric)
 	mux.HandleFunc("/update/gauge/", h.GetGaugeMetric)
-	mux.HandleFunc("/", send404)
+	mux.HandleFunc("/", send400)
 	err := http.ListenAndServe("localhost:8080", mux)
 	return err
 
