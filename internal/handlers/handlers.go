@@ -24,7 +24,7 @@ func parseURL(r *http.Request) ([]string, error) {
 	if urlLen != 4 {
 		return []string{"error"}, errors.New("unexpected length of URL")
 	}
-	return []string{url[1], url[2]}, nil
+	return []string{url[2], url[3]}, nil
 
 }
 
