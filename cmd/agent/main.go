@@ -1,9 +1,7 @@
 package main
 
-import (
-	"github.com/alilxxey/dnn.monitoring/internal/gatherer"
-)
+import "fmt"
 
 func main() {
-	gatherer.ReadStats()
+	fmt.Println(1)
 }
