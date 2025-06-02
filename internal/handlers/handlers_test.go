@@ -32,7 +32,7 @@ func TestHTTPHandler_GetCounterMetric(t *testing.T) {
 		},
 		{
 			name:     "wrong metric value type",
-			endpoint: "/update/counter/1.1",
+			endpoint: "/update/counter/test/1.1",
 			want: http.Response{
 				StatusCode: http.StatusBadRequest,
 			},
@@ -41,40 +41,40 @@ func TestHTTPHandler_GetCounterMetric(t *testing.T) {
 			name:     "wrong endpoint/big depth",
 			endpoint: "/update/gauge/1.44/asdf",
 			want: http.Response{
-				StatusCode: http.StatusNotFound,
+				StatusCode: http.StatusBadRequest,
 			},
 		},
 		{
 			name:     "send gauge metric to counter",
-			endpoint: "/update/gauge/1.22",
+			endpoint: "/update/gauge/test/1.22",
 			want: http.Response{
 				StatusCode: http.StatusBadRequest,
 			},
 		},
 		{
 			name:     "OK/send counter metric",
-			endpoint: "/update/counter/444",
+			endpoint: "/update/counter/test/444",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "OK/send long counter metric",
-			endpoint: "/update/counter/44222222222224",
+			endpoint: "/update/counter/test/44222222222224",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "OK/send negative counter metric",
-			endpoint: "/update/counter/-12333",
+			endpoint: "/update/counter/test/-12333",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "OK/send counter metric with leading 0",
-			endpoint: "/update/counter/-12333",
+			endpoint: "/update/counter/test/02333",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
@@ -121,49 +121,49 @@ func TestHTTPHandler_GetGaugeMetric(t *testing.T) {
 		},
 		{
 			name:     "wrong endpoint/big depth",
-			endpoint: "/update/gauge/1.44/asdf",
+			endpoint: "/update/gauge/test/1.44/asdf",
 			want: http.Response{
 				StatusCode: http.StatusNotFound,
 			},
 		},
 		{
 			name:     "OK/send gauge metric",
-			endpoint: "/update/gauge/1.22",
+			endpoint: "/update/gauge/test/1.22",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "send counter metric to gauge",
-			endpoint: "/update/gauge/444",
+			endpoint: "/update/gauge/test/444",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "OK/send int gauge metric",
-			endpoint: "/update/gauge/122",
+			endpoint: "/update/gauge/test/122",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "OK/send negative gauge metric",
-			endpoint: "/update/gauge/-1.4422",
+			endpoint: "/update/gauge/test/-1.4422",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "OK/send long metric",
-			endpoint: "/update/gauge/1123123123.22443434",
+			endpoint: "/update/gauge/test/1123123123.22443434",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
 		},
 		{
 			name:     "OK/send gauge metric as .1",
-			endpoint: "/update/gauge/.22",
+			endpoint: "/update/gauge/test/.22",
 			want: http.Response{
 				StatusCode: http.StatusOK,
 			},
