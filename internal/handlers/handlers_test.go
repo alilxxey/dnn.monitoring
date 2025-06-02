@@ -215,7 +215,7 @@ func Test_parseURL(t *testing.T) {
 			args: args{
 				&http.Request{
 					URL: &url.URL{
-						Path: "/update/counter/12",
+						Path: "/update/counter/counter/12",
 					},
 				},
 			},
@@ -227,7 +227,7 @@ func Test_parseURL(t *testing.T) {
 			args: args{
 				&http.Request{
 					URL: &url.URL{
-						Path: "/update/counter/123/ggg",
+						Path: "/update/counter/123/ggg/12",
 					},
 				},
 			},
@@ -239,7 +239,7 @@ func Test_parseURL(t *testing.T) {
 			args: args{
 				&http.Request{
 					URL: &url.URL{
-						Path: "/update/gauge/123123",
+						Path: "/update/gauge/gauge/123123",
 					},
 				},
 			},
@@ -251,7 +251,7 @@ func Test_parseURL(t *testing.T) {
 			args: args{
 				&http.Request{
 					URL: &url.URL{
-						Path: "/update/gauge/11111/12",
+						Path: "/update/gauge/g/11111/12",
 					},
 				},
 			},
